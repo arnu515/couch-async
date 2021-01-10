@@ -22,6 +22,8 @@ jobs:
       couchdb: 
        image: couchdb
        options: >-
+        -e "COUCHDB_USER=username"
+        -e "COUCHDB_PASSWORD=password"
         --health-cmd="curl http://localhost:5984"
         --health-interval=10s
         --health-timeout=10s
@@ -44,6 +46,6 @@ jobs:
       run: npm run test
 
 env:
-  COUCH_URL: "https://admin:password@127.0.0.1:5984"
+  COUCH_URL: "http://username:password@127.0.0.1:5984"
   COUCH_DB_1: test1
   COUCH_DB_2: test2
