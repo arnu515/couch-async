@@ -1,0 +1,45 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Test couch-async
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+        couchdb-version: ["3.1"]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - name: Setup CouchDB ${{ matrix.couchdb-version }}
+      uses: iamssen/couchdb-github-action@0.3.0
+      with:
+        couchdb-version: ${{ matrix.couchdb-version }}
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Test
+      run: npm run test
+
+env:
+  COUCH_URL: "https://admin:password@127.0.0.1:5984"
+  COUCH_DB_1: test1
+  COUCH_DB_2: test2
